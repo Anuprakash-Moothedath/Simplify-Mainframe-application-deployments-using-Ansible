@@ -217,44 +217,43 @@ END
 
 9. Do the CICS refresh (new copy) from an Ansible playbook by executing ```CEMT``` transaction in the target CICS region. 
 
-**Option 1**
-To achieve this using Ansible, use the ```zos_operator``` module to issue ```CEMT``` as a console command in the playbook task.  See [./tasks/cics_refresh.yml](./tasks/cics_refresh.yml). The variable ```cics_pgms``` can resolve from the variables file located at [./group_vars/deploy_vars.yml](./group_vars/deploy_vars.yml). Do the CICS new copy for all the programs listed in ```cics_pgms```. Following is an excerpt of the CICS refresh task.
-```YAML
-- name: New Copy CICS Program
-  zos_operator:
-    cmd: 'F CICSTS55,CEMT S PROG({{ item }}) NEW'
-  loop: "{{ cics_pgms }}"
-  register: result
+   * **Option 1**
+     To achieve this using Ansible, use the ```zos_operator``` module to issue ```CEMT``` as a console command in the playbook task.  See [./tasks/cics_refresh.yml](./tasks/cics_refresh.yml). The variable ```cics_pgms``` can resolve from the variables file located at [./group_vars/deploy_vars.yml](./group_vars/deploy_vars.yml). Do the CICS new copy for all the programs listed in ```cics_pgms```. Following is an excerpt of the CICS refresh task.
+     ```YAML
+     - name: New Copy CICS Program
+       zos_operator:
+         cmd: 'F CICSTS55,CEMT S PROG({{ item }}) NEW'
+       loop: "{{ cics_pgms }}"
+       register: result
 
-- name: Response for New Copy
-  debug:
-    msg: "{{ result }}"
-```
+     - name: Response for New Copy
+       debug:
+         msg: "{{ result }}"
+     ```
 
-**Option 2**
-If CICS management client interface (CMCI) setup in the environment ```ibm_zos_cics``` module can be used to do the CICS New Copy of the programs instead of ```zos_operator``` module. See [./tasks/cics_refresh.yml](./tasks/cics_refresh.yml), comment the code below **Option 1: New Copy CICS programs using MVS operator command** and uncomment the code below **Option 2: New Copy CICS programs using IBM z/OS CICS Ansible collection**. The variables ```context```, ```scope```, ```cmci_host```, ```cmci_port``` and ```scheme``` should be set in [./group_vars/all.yml](./group_vars/all.yml) based on your CMCI setup. The variable ```cics_pgms``` can resolve from the variables file located at [./group_vars/deploy_vars.yml](./group_vars/deploy_vars.yml). Do the CICS new copy for all the programs listed in ```cics_pgms```. Following is an excerpt of the CICS refresh task using ```ibm_zos_cics```.
-```YAML
-- name: New Copy CICS Program
-  delegate_to: localhost
-  cmci_action:
-    context: '{{ context }}'
-    scope: '{{ scope }}'
-    cmci_host: '{{ cmci_host }}'
-    cmci_port: '{{ cmci_port | int }}'
-    scheme: '{{ scheme }}'
-    action_name: NEWCOPY
-    type: CICSProgram
-    resources:
-      filter:
-        program: '{{ item }}'
-  loop: "{{ cics_pgms }}"
-  register: result
+   * **Option 2** \
+     If CICS management client interface (CMCI) setup in the environment ```ibm_zos_cics``` module can be used to do the CICS New Copy of the programs instead of ```zos_operator``` module. See [./tasks/cics_refresh.yml](./tasks/cics_refresh.yml), comment the code below ```Option 1: New Copy CICS programs using MVS operator command``` and uncomment the code below ```Option 2: New Copy CICS programs using IBM z/OS CICS Ansible collection```. The variables ```context```, ```scope```, ```cmci_host```, ```cmci_port``` and ```scheme``` should be set in [./group_vars/all.yml](./group_vars/all.yml) based on your CMCI setup. The variable ```cics_pgms``` can resolve from the variables file located at [./group_vars/deploy_vars.yml](./group_vars/deploy_vars.yml). Do the CICS new copy for all the programs listed in ```cics_pgms```. Following is an excerpt of the CICS refresh task using ```ibm_zos_cics```.
+     ```YAML
+     - name: New Copy CICS Program
+       delegate_to: localhost
+       cmci_action:
+         context: '{{ context }}'
+         scope: '{{ scope }}'
+         cmci_host: '{{ cmci_host }}'
+         cmci_port: '{{ cmci_port | int }}'
+         scheme: '{{ scheme }}'
+         action_name: NEWCOPY
+         type: CICSProgram
+         resources:
+           filter:
+             program: '{{ item }}'
+       loop: "{{ cics_pgms }}"
+       register: result
 
-- name: Response for New Copy
-  debug:
-    msg: "{{ result }}"
-```
-
+     - name: Response for New Copy
+       debug:
+         msg: "{{ result }}"
+     ```
 
 10. Perform rollback to reverse the changes in target libraries if required. Create an Ansible task - [./rollback_app.yml](./rollback_app.yml) to copy back the previous version of the load modules and DBRMs from the backup libraries to the target environment libraries. Bind the DBRM's to the Db2 plan and do CICS refresh (new copy) to the CICS load modules based on the parameters ```db2``` and ```cics``` defined in variables file - “[./group_vars/deploy_vars.yml](./group_vars/deploy_vars.yml)”. 
 
