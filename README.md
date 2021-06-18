@@ -293,10 +293,9 @@ For the complete sample playbooks, tasks, templates and files discussed above, p
 ## Next Steps
 
 - Automated generation of [./group_vars/deploy_vars.yml](./group_vars/deploy_vars.yml) from the build process to deploy only the modified components
-- Implement a full tracking mechanism for all deployments to understand what is deployed into which environments. 
-- Streamline the The backup process. It must be named and tracked and stored to allow for rollback at any time in the future. Backup process can be implemented by integrating with SCMs or Binary repositories used.
-- Streamline the Rollback process by integrating with SCMs or Binary repositories used.
-- The tasks mentioned in here can be achieved in multiple ways using Ansible.  Explore more on Ansible.
+- Streamline the backup process. It must be named and tracked and stored to allow for rollback at any time in the future. Backup process can be implemented by integrating with SCMs or Binary repositories used. Implement a full tracking mechanism for all deployments to understand what is deployed into which environments. 
+- Streamline the rollback process by integrating with SCMs or Binary repositories used.
+- The Ansible tasks mentioned in here can be achieved in multiple ways using Ansible and integrating with different tools and technologies.  Explore more on Ansible.
 - Watch out this space for new Ansible collections for z/OS - [Ansible Galaxy](https://galaxy.ansible.com/search?deprecated=false&keywords=zos&order_by=-relevance&page=1). 
 
 ## License
