@@ -79,7 +79,7 @@ cics_pgms: #<List of modified CICS programs to deploy, Ex:['LOAD01','LOAD02','LO
 
   collections:
     - ibm.ibm_zos_core
-	- ibm.ibm_zos_cics
+    - ibm.ibm_zos_cics
   
   vars_files: "./group_vars/deploy_vars.yml"
 
@@ -217,7 +217,7 @@ END
 
 9. Do the CICS refresh (new copy) from an Ansible playbook by executing ```CEMT``` transaction in the target CICS region. 
 
-   * **Option 1**
+   * **Option 1** \
      To achieve this using Ansible, use the ```zos_operator``` module to issue ```CEMT``` as a console command in the playbook task.  See [./tasks/cics_refresh.yml](./tasks/cics_refresh.yml). The variable ```cics_pgms``` can resolve from the variables file located at [./group_vars/deploy_vars.yml](./group_vars/deploy_vars.yml). Do the CICS new copy for all the programs listed in ```cics_pgms```. Following is an excerpt of the CICS refresh task.
      ```YAML
      - name: New Copy CICS Program
